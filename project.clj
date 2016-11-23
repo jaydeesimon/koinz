@@ -54,6 +54,7 @@
                {:id "min"
                 :source-paths ["src"]
                 :compiler {:output-to "resources/public/js/compiled/koinz.js"
+                           :output-dir "target"
                            :main koinz.core
                            :optimizations :advanced
                            :pretty-print false}}]}
