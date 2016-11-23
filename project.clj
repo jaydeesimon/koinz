@@ -12,7 +12,8 @@
                   :exclusions [org.clojure/tools.reader]]]
 
   :plugins [[lein-figwheel "0.5.8"]
-            [lein-cljsbuild "1.1.4" :exclusions [[org.clojure/clojure]]]]
+            [lein-cljsbuild "1.1.4" :exclusions [[org.clojure/clojure]]]
+            [lein-doo "0.1.7"]]
 
   :source-paths ["src"]
 
@@ -40,6 +41,13 @@
                            ;; To console.log CLJS data-structures make sure you enable devtools in Chrome
                            ;; https://github.com/binaryage/cljs-devtools
                            :preloads [devtools.preload]}}
+
+               {:id "test"
+                :source-paths ["src" "test/cljs"]
+                :compiler {:output-to "resources/public/js/compiled/testable.js"
+                           :main koinz.test-runner
+                           :optimizations :none}}
+
                ;; This next build is an compressed minified build for
                ;; production. You can build this with:
                ;; lein cljsbuild once min
@@ -86,6 +94,7 @@
              ;; :server-logfile "tmp/logs/figwheel-logfile.log"
              }
 
+  :doo {:build "test"}
 
   ;; setting up nREPL for Figwheel and ClojureScript dev
   ;; Please see:
@@ -95,6 +104,7 @@
   :profiles {:dev {:dependencies [[binaryage/devtools "0.8.2"]
                                   [figwheel-sidecar "0.5.8"]
                                   [com.cemerick/piggieback "0.2.1"]]
+
                    ;; need to add dev source path here to get user.clj loaded
                    :source-paths ["src" "dev"]
                    ;; for CIDER
