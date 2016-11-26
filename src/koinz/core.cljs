@@ -3,10 +3,6 @@
 
 (enable-console-print!)
 
-(println "This text is printed from src/koinz/core.cljs. Go ahead and edit it and see reloading in action.")
-
-;; define your app data so that it doesn't get over-written on reload
-
 (defonce app-state (atom {:text "Hello world!"}))
 
 (defn on-js-reload []
@@ -31,13 +27,13 @@
     (vec (concat top-rows bottom-rows))))
 
 (defn generate-board' [rows cols]
-  (repeatedly rows #(rand-row (concat colors [:.]) cols)))
+  (vec (repeatedly rows #(rand-row (concat colors [:.]) cols))))
 
 (defn generate-board'' [rows cols]
   (vec (repeat rows (vec (repeat cols :r)))))
 
 (defn transpose [m]
-  (apply map vector m))
+  (apply mapv vector m))
 
 (defn fall [board]
   (->> (transpose board)
