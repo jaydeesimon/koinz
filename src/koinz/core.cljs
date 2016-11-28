@@ -1,5 +1,5 @@
 (ns koinz.core
-  (:require ))
+  (:require [cljs.core :as c]))
 
 (enable-console-print!)
 
@@ -11,26 +11,23 @@
   ;; (swap! app-state update-in [:__figwheel_counter] inc)
 )
 
-(def colors [:r :g :b])
+(def colors [:red :green :blue])
 
 (def rows 17)
 (def cols 14)
 
-(defn rand-row [row-vals cols]
-  (mapv #(rand-nth row-vals) (range cols)))
+(defn generate-coin
+  ([] (generate-coin (rand-nth colors)))
+  ([color] {:id (c/random-uuid) :color color}))
 
 (defn generate-board [rows cols]
-  (let [top-rows (for [_ (range (/ rows 2))]
-                   (vec (repeat cols :.)))
-        bottom-rows (for [_ (range (/ rows 2))]
-                      (rand-row colors cols))]
-    (vec (concat top-rows bottom-rows))))
+  (let [top (repeat (/ rows 2) (vec (repeat cols :.)))
+        bottom (repeatedly (/ rows 2) #(vec (repeatedly cols generate-coin)))]
+    (vec (concat top bottom))))
 
 (defn generate-board' [rows cols]
-  (vec (repeatedly rows #(rand-row (concat colors [:.]) cols))))
-
-(defn generate-board'' [rows cols]
-  (vec (repeat rows (vec (repeat cols :r)))))
+  (let [cols-fn (fn [] ((rand-nth [generate-coin (constantly :.)])))]
+    (vec (repeatedly rows #(vec (repeatedly cols cols-fn))))))
 
 (defn transpose [m]
   (apply mapv vector m))
@@ -55,3 +52,14 @@
         (recur (apply conj chain like-neighbors)
                (apply conj (rest q) (remove seen like-neighbors))
                seen)))))
+
+(defn board-map [board]
+  (->> (for [row (range (count board))
+             col (range (count (first board)))]
+         [row col])
+       (remove #(= :. (get-in board %)))
+       (reduce #(assoc %1 (get-in board %2) %2) {})))
+
+(defn transitions [board0 board1]
+  (->> (merge-with vector (board-map board0) (board-map board1))
+       (filter (fn [[_ [start end]]] (not= start end)))))
