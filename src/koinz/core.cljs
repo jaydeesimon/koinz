@@ -62,4 +62,4 @@
 
 (defn transitions [board0 board1]
   (->> (merge-with vector (board-map board0) (board-map board1))
-       (filter (fn [[_ [start end]]] (not= start end)))))
+       (filter (fn [[_ [coord0 coord1]]] (not= coord0 coord1)))))
