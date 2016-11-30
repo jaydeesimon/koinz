@@ -20,7 +20,7 @@
             col (range cols)]
       (when (not= (get-in board [row col]) :.)
         (let [shape (circle :radius (/ width 2.5)
-                            :fill ((get-in board [row col]) {:b "blue" :r "red" :g "green"})
+                            :fill (-> (get-in board [row col]) :color name)
                             :left (* width col)
                             :top (* height row))]
           (.add canvas shape))))))
