@@ -24,3 +24,11 @@
                             :left (* width col)
                             :top (* height row))]
           (.add canvas shape))))))
+
+#_(.animate c "left" 100 (clj->js {:duration 2000
+                                 :easing fabric.util.ease.easeOutBounce
+                                 :onChange (.bind canvas.renderAll canvas)}))
+
+#_(defn render []
+  (.renderAll canvas)
+  (fabric.util.requestAnimFrame render))
